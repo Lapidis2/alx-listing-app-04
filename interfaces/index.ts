@@ -22,6 +22,7 @@ export interface PROPERTYLISTINGSAMPLEProps {
 
 export interface PropertyProps {
   name: string;
+  description:string
   address: {
     state: string;
     city: string;
