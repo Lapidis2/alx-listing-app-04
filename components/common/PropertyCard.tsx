@@ -8,7 +8,7 @@ interface cardProps {
   property: PROPERTYLISTINGSAMPLEProps;
 }
 const PropertyCard: React.FC<cardProps> = ({ property }) => {
-	const { name, image, price, rating } = property;
+	 const { name, image, price, rating } = property;
   return (
     <div className="w-full max-w-[360px] rounded-2xl shadow hover:shadow-xl transition duration-300 bg-white">
       {/* Image */}

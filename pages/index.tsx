@@ -45,7 +45,7 @@ export default function Home() {
     <Filters />
 
     <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 min-h-screen p-12 gap-4">
-                {properties.map((property, id) => (
+                {properties.map((property) => (
                     <PropertyCard
                         key={property.id}
 						property={property}
