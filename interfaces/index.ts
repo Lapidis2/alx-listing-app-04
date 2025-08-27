@@ -13,7 +13,7 @@ export interface ButtonProps {
 }
 
 export interface PROPERTYLISTINGSAMPLEProps {
-	id:string
+	id:string|number
   image: string;
   rating:number;
   name:string;

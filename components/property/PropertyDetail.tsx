@@ -23,14 +23,14 @@ const PropertyDetail: React.FC<{ property: PropertyProps }> = ({
         <span className="text-yellow-500">{property.price} $</span>
       </div>
 
-      {/* Description */}
+    
 
       <div className="mt-4">
         <h2 className="text-2xl font-semibold">Description</h2>
         <p>{property.description}</p>
       </div>
 
-      {/* Amenities */}
+    
       <div className="mt-4">
 			<h2 className="text-2xl font-semibold">What this place offers</h2>
 			<ul className="flex flex-wrap space-x-4">
