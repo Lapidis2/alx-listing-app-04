@@ -1,9 +1,34 @@
+import axios from "axios";
+import React, {useState,useEffect} from "react";
 import Filters from "@/components/common/Filters";
 import PropertyCard from "@/components/common/PropertyCard";
-import { PROPERTYLISTINGSAMPLE } from "@/constants";
-import React from "react";
+
+import { PROPERTYLISTINGSAMPLEProps } from "@/interfaces";
 
 export default function Home() {
+	const [properties,setProperties]=useState<PROPERTYLISTINGSAMPLEProps[]>([])
+	const [loading,setLoading]=useState(true)
+	useEffect(()=>{
+		const fetchProperties=async()=>{
+		try {
+			
+				const response= await axios.get("/api/properties")
+				setProperties(response.data)
+				setLoading(false)
+			
+			
+		} catch (error) {
+			console.log({message:error})
+		}
+		finally{
+			setLoading(false)
+		}}
+		fetchProperties()
+	}
+,[])
+	if(loading){
+		return <div>Loading...</div>
+	}
 
   return (
     <>
@@ -20,13 +45,10 @@ export default function Home() {
     <Filters />
 
     <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 min-h-screen p-12 gap-4">
-                {PROPERTYLISTINGSAMPLE.map((property, index) => (
+                {properties.map((property, id) => (
                     <PropertyCard
-                        key={index}
-                        name={property.name}
-                        image={property.image}
-                        price={property.price}
-                        rating={property.rating}
+                        key={property.id}
+						property={property}
                     />
                 ))}
     </section>
