@@ -1,21 +1,50 @@
-import BookingForm from "@/components/booking/BookingForm";
-import OrderSummary from "@/components/booking/OrderSummary";
+import axios from "axios";
+import { useState } from "react";
+import BookForm from "@/components/booking/BookingForm";
 
 export default function BookingPage() {
-  const bookingDetails = {
-    propertyName: "Villa Arrecife Beach House",
-    price: 7500,
-    bookingFee: 65,
-    totalNights: 3,
-    startDate: "24 August 2024",
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    cardNumber: "",
+    expirationDate: "",
+    cvv: "",
+    billingAddress: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      await axios.post("/api/bookings", formData);
+      alert("Booking confirmed!");
+    } catch (err) {
+      setError("Failed to submit booking.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="grid grid-cols-2 gap-6">
-        <BookingForm />
-        <OrderSummary bookingDetails={bookingDetails} />
-      </div>
+    <div className="p-6">
+      <BookForm
+        formData={formData}
+        setFormData={setFormData}
+        handleSubmit={handleSubmit}
+        loading={loading}
+      />
+      {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
 }
