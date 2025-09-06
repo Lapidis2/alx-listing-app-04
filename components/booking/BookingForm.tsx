@@ -1,166 +1,320 @@
-import React from "react";
+import React, { useState } from "react";
+import { PropertyProps, BookingDetails } from "@/interfaces";
+import OrderSummary from "./OrderSummary";
+import axios from "axios";
 
-interface BookFormProps {
-  formData: any;
-  setFormData: React.Dispatch<React.SetStateAction<any>>;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  loading: boolean;
+interface BookingFormProps {
+  property: PropertyProps;
 }
 
-const BookForm: React.FC<BookFormProps> = ({ formData, setFormData, handleSubmit, loading }) => {
+const BookingForm: React.FC<BookingFormProps> = ({ property }) => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+    country: "",
+    checkin: "",
+    checkout: "",
+    totalNights: 0,
+  });
+
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
+  const [loading,setLoading]=useState(false)
+  const [error,setError] = useState("")
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+
+      // calculate nights automatically
+      if (name === "checkin" || name === "checkout") {
+        const checkinDate = new Date(updated.checkin);
+        const checkoutDate = new Date(updated.checkout);
+
+        if (checkinDate && checkoutDate && checkoutDate > checkinDate) {
+          const diffTime = Math.abs(checkoutDate.getTime() - checkinDate.getTime());
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          updated.totalNights = diffDays;
+        } else {
+          updated.totalNights = 0;
+        }
+      }
+
+      return updated;
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    const nights = formData.totalNights || 1;
+    const pricePerNight = property.price || 0;
+    const bookingFee = pricePerNight * nights;
+    const propertyName = property.name;
+  
+    const details: BookingDetails = {
+      propertyName,
+      checkin: formData.checkin,
+      checkout: formData.checkout,
+      totalNights: nights,
+      pricePerNight,
+      bookingFee,
+      customer: {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        address: {
+          street: formData.street,
+          city: formData.city,
+          state: formData.state,
+          zip: formData.zip,
+          country: formData.country,
+        },
+      },
+      payment: {
+        cardNumber: formData.cardNumber,
+        expiry: formData.expiry,
+        cvv: formData.cvv,
+      },
+    };
+  
+    setBookingDetails(details); // store in state
+    setLoading(true);
+    setError("");
+  
+    try {
+      const response = await axios.post("/api/bookings", formData);
+      alert("Booking confirmed!");
+      console.log(response.data)
+    } catch (error) {
+      setError("Failed to submit booking.");
+      console.log(error)
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="bg-white p-6 shadow-md rounded-lg">
-      <h2 className="text-xl font-semibold">Contact Detail</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Contact Information */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label>First Name</label>
-            <input
-              type="text"
-              className="border p-2 w-full mt-2"
-              value={formData.firstName}
-              onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label>Last Name</label>
-            <input
-              type="text"
-              className="border p-2 w-full mt-2"
-              value={formData.lastName}
-              onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-              required
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              className="border p-2 w-full mt-2"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label>Phone Number</label>
-            <input
-              type="text"
-              className="border p-2 w-full mt-2"
-              value={formData.phoneNumber}
-              onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-              required
-            />
-          </div>
-        </div>
-
-        {/* Payment Information */}
-        <h2 className="text-xl font-semibold mt-6">Pay with</h2>
-        <div className="mt-4">
-          <label>Card Number</label>
+    <section className="block lg:flex items-center justify-between gap-8 p-4">
+  {/* Booking Form */}
+  <article className="bg-white  flex-1 p-6 shadow-lg rounded-2xl">
+    <h2 className="text-2xl font-bold mb-4 text-gray-800">Booking Details</h2>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Contact Info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">First Name</label>
           <input
             type="text"
-            className="border p-2 w-full mt-2"
-            value={formData.cardNumber}
-            onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
             required
           />
         </div>
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          <div>
-            <label>Expiration Date</label>
-            <input
-              type="text"
-              className="border p-2 w-full mt-2"
-              value={formData.expirationDate}
-              onChange={(e) => setFormData({ ...formData, expirationDate: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label>CVV</label>
-            <input
-              type="text"
-              className="border p-2 w-full mt-2"
-              value={formData.cvv}
-              onChange={(e) => setFormData({ ...formData, cvv: e.target.value })}
-              required
-            />
-          </div>
-        </div>
-
-        {/* Billing Address */}
-        <h2 className="text-xl font-semibold mt-6">Billing Address</h2>
-        <div className="mt-4">
-          <label>Street Address</label>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Last Name</label>
           <input
             type="text"
-            className="border p-2 w-full mt-2"
-            value={formData.billingAddress}
-            onChange={(e) => setFormData({ ...formData, billingAddress: e.target.value })}
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
             required
           />
         </div>
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          <div>
-            <label>City</label>
-            <input
-              type="text"
-              className="border p-2 w-full mt-2"
-              value={formData.city}
-              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label>State</label>
-            <input
-              type="text"
-              className="border p-2 w-full mt-2"
-              value={formData.state}
-              onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-              required
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          <div>
-            <label>Zip Code</label>
-            <input
-              type="text"
-              className="border p-2 w-full mt-2"
-              value={formData.zipCode}
-              onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label>Country</label>
-            <input
-              type="text"
-              className="border p-2 w-full mt-2"
-              value={formData.country}
-              onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-              required
-            />
-          </div>
-        </div>
+      </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="mt-6 bg-green-500 text-white py-2 px-4 rounded-md w-full"
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Confirm & Pay"}
-        </button>
-      </form>
-    </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Phone</label>
+          <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            required
+          />
+        </div>
+      </div>
+
+      {/* Payment Info */}
+      <h3 className="text-lg font-semibold text-gray-800">Payment Information</h3>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Card Number</label>
+        <input
+          type="text"
+          name="cardNumber"
+          value={formData.cardNumber}
+          onChange={handleChange}
+          className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+          required
+        />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Expiry</label>
+          <input
+            type="text"
+            name="expiry"
+            value={formData.expiry}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">CVV</label>
+          <input
+            type="text"
+            name="cvv"
+            value={formData.cvv}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            required
+          />
+        </div>
+      </div>
+
+      {/* Dates */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Check-in</label>
+          <input
+            type="date"
+            name="checkin"
+            value={formData.checkin}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Check-out</label>
+          <input
+            type="date"
+            name="checkout"
+            value={formData.checkout}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            required
+          />
+        </div>
+      </div>
+
+      {/* Total Nights */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Total Nights</label>
+        <input
+          type="text"
+          name="totalNights"
+          value={`${formData.totalNights} night(s)`}
+          readOnly
+          className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-700"
+        />
+      </div>
+      <p className="text-gray-700">
+        Price per night: <strong>${property.price}</strong>
+      </p>
+      <p className="text-gray-900 font-semibold">
+        Total: ${(property.price || 0) * (formData.totalNights || 0)}
+      </p>
+
+      {/* Billing */}
+      <h3 className="text-lg font-semibold text-gray-800">Billing Address</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input
+          type="text"
+          name="street"
+          placeholder="Street Address"
+          value={formData.street}
+          onChange={handleChange}
+          className="col-span-2 mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500"
+          required
+        />
+        <input
+          type="text"
+          name="city"
+          placeholder="City"
+          value={formData.city}
+          onChange={handleChange}
+          className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500"
+          required
+        />
+        <input
+          type="text"
+          name="state"
+          placeholder="State"
+          value={formData.state}
+          onChange={handleChange}
+          className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500"
+          required
+        />
+        <input
+          type="text"
+          name="zip"
+          placeholder="Zip"
+          value={formData.zip}
+          onChange={handleChange}
+          className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500"
+          required
+        />
+        <input
+          type="text"
+          name="country"
+          placeholder="Country"
+          value={formData.country}
+          onChange={handleChange}
+          className="mt-1 block w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-teal-500"
+          required
+        />
+      </div>
+
+      {/* Submit */}
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full mt-6 rounded-lg bg-teal-600 py-3 px-4 font-semibold text-white shadow-md hover:bg-teal-700 focus:ring-2 focus:ring-teal-500 focus:ring-offset-1"
+      >
+        {loading ? "Processing..." : "Confirm & Pay"}
+      </button>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
+    </form>
+  </article>
+
+  {/* Order Summary */}
+  {bookingDetails && (
+    <article className="bg-gray-50 p-6 shadow-lg rounded-2xl">
+      <OrderSummary bookingDetails={bookingDetails} />
+    </article>
+  )}
+</section>
+
   );
 };
 
-export default BookForm;
+export default BookingForm;
