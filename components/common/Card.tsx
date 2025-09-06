@@ -1,10 +1,10 @@
 import React from "react";
 import { CardProps } from "../../interfaces";
-import Image from "next/image";
+
 const Card: React.FC<CardProps> = ({ title, description, imageUrl, price }) => {
   return (
     <div className="w-full rounded overflow-hidden shadow-lg hover:shadow-xl transition">
-      <Image
+      <img
         className="w-full h-48 object-cover"
         src={imageUrl}
         alt={title}

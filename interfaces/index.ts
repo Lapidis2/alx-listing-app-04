@@ -6,13 +6,7 @@ export interface ButtonProps {
 	type?: "button" | "submit" | "reset";
 	variant?: "primary" | "secondary";
   }
-  export interface CardProps{
-	title: string;
-	description: string;
-	price:number;
-	imageUrl: string;
-	onClick?: () => void;
-  }
+  
   export interface PROPERTYLISTINGSAMPLEProps {
 	image: string;
 	rating:number;
@@ -40,13 +34,6 @@ export interface ButtonProps {
 	discount?: string;
 	description?: string;
   }
-  
-  export interface Booking {
-	id: string;
-	name: string;
-	property: string;
-	date: string;
-	}
   
   export interface PropertyListingProps {
 	id: string;

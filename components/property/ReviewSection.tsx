@@ -1,5 +1,5 @@
-
-import React, { useCallback, useState } from 'react';
+// components/reviews/ReviewSection.tsx
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaStar, FaUser, FaRegSmile, FaRegFrown, FaRegMeh } from 'react-icons/fa';
 import ReviewForm from '../common/ReviewForm';
@@ -14,7 +14,6 @@ interface Review {
   rating: number;
   comment: string;
   date: string;
-  
 }
 
 interface ReviewSectionProps {
@@ -25,7 +24,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ propertyId }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [averageRating, setAverageRating] = useState<number>(0);
+  const [averageRating, setAverageRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
 
@@ -37,16 +36,15 @@ const fetchReviews = useCallback(async () => {
 	  setError(null);
   
 	  const response = await axios.get(`/api/properties/${propertyId}/review`);
-	  console.log("Fetched reviews:", response.data);
-  
-	  const reviews = response.data.data; 
+	  const reviews = response.data;
   
 	  setReviews(reviews || []);
   
+	
 	  const total = reviews.length;
-	  const avg:number =
+	  const avg =
 		total > 0
-		  ? reviews.reduce((sum: number, r:Review) => sum + r.rating, 0) / total
+		  ? reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / total
 		  : 0;
   
 	  setAverageRating(avg);
@@ -62,13 +60,13 @@ const fetchReviews = useCallback(async () => {
   const handleSubmitReview = async (reviewData: { rating: number; comment: string }) => {
     try {
       const response = await axios.post(`/api/properties/${propertyId}/review`, reviewData);
-      console.log(response.data);
-      if (response.data) {
-console.log(response.data);
+      
+      if (response.data.success) {
+        // Refresh reviews
         await fetchReviews();
         setShowReviewForm(false);
       } else {
-        throw new Error(response.data || 'Failed to submit review');
+        throw new Error(response.data.error || 'Failed to submit review');
       }
     } catch (err) {
       console.error('Error submitting review:', err);
@@ -77,7 +75,7 @@ console.log(response.data);
   };
 
  
-  const ratingDistribution = [0, 0, 0, 0, 0]; 
+  const ratingDistribution = [0, 0, 0, 0, 0]; // 1-5 stars
   reviews.forEach(review => {
     if (review.rating >= 1 && review.rating <= 5) {
       ratingDistribution[5 - review.rating]++;
@@ -180,9 +178,7 @@ console.log(response.data);
                       <Image
                         src={review.userAvatar}
                         alt={review.userName}
-						width={40}
-						height={40}
-						className="rounded-full object-cover"
+                        className="w-10 h-10 rounded-full object-cover"
                       />
                     ) : (
                       <FaUser className="text-gray-400" />
@@ -191,7 +187,7 @@ console.log(response.data);
                   <div>
                     <h4 className="font-semibold">{review.userName}</h4>
                     <div className="flex items-center text-sm text-gray-600">
-                      <span>{new Date(review.date).toLocaleDateString()}</span>
+                      <span>{new Date(review?.date).toLocaleDateString()}</span>
                     </div>
                   </div>
                 </div>
