@@ -13,7 +13,12 @@ export interface ButtonProps {
 	name:string;
 	price:number;
   }
-  
+  export interface CardProps {
+	title: string;
+	description: string;
+	imageUrl: string;
+	price?: number;
+  }
   export interface PropertyProps {
 	id?: string;
 	name: string;
