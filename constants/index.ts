@@ -22,189 +22,49 @@ export const bgImage = {
 
 export const PROPERTYLISTINGSAMPLE: PROPERTYLISTINGSAMPLEProps []  = [
     {
-		id: "1",
-		name: "Luxury Villa",
-		image: "/assets/images/image-1.png",
-		price: 350,
-		rating: 4.85
-	},
-	{
-		id: "2",
-		name: "Entire cabin",
-		image: "/assets/images/image-2.png",
-		price: 62,
-		rating: 4.76
-	},
-	{
-		id: "3",
-		name: "Modern Apartment",
-		image: "/assets/images/image-3.png",
-		price: 120,
-		rating: 4.9
-	},
-	{
-		id: "4",
-		name: "Cozy Studio",
-		image: "/assets/images/image-4.png",
-		price: 80,
-		rating: 4.5
-	},
-	{
-		id: "5",
-		name: "Luxury Villa",
-		image: "/assets/images/image-1.png",
-		price: 350,
-		rating: 4.85
-	},
-	{
-		id: "6",
-		name: "Entire cabin",
-		image: "/assets/images/image-2.png",
-		price: 62,
-		rating: 4.76
-	},
-	{
-		id: "7",
-		name: "Modern Apartment",
-		image: "/assets/images/image-3.png",
-		price: 120,
-		rating: 4.9
-	},
-	{
-		id: "8",
-		name: "Cozy Studio",
-		image: "/assets/images/image-4.png",
-		price: 80,
-		rating: 4.5
-	},
-	{
-		id: "9",
-		name: "Luxury Villa",
-		image: "/assets/images/image-1.png",
-		price: 350,
-		rating: 4.85
-	},
-	{
-		id: "10",
-		name: "Entire cabin",
-		image: "/assets/images/image-2.png",
-		price: 62,
-		rating: 4.76
-	},
-	{
-		id: "11",
-		name: "Modern Apartment",
-		image: "/assets/images/image-3.png",
-		price: 120,
-		rating: 4.9
-	},
-	{
-		id: "12",
-		name: "Cozy Studio",
-		image: "/assets/images/image-4.png",
-		price: 80,
-		rating: 4.5
-	},
-	{
-		id: "13",
-		name: "Luxury Villa",
-		image: "/assets/images/image-1.png",
-		price: 350,
-		rating: 4.85
-	},
-	{
-		id: "14",
-		name: "Entire cabin",
-		image: "/assets/images/image-2.png",
-		price: 62,
-		rating: 4.76
-	},
-	{
-		id: "15",
-		name: "Modern Apartment",
-		image: "/assets/images/image-3.png",
-		price: 120,
-		rating: 4.9
-	},
-	{
-		id: "16",
-		name: "Cozy Studio",
-		image: "/assets/images/image-4.png",
-		price: 80,
-		rating: 4.5
-	},
-	{
-		id: "17",
-		name: "Luxury Villa",
-		image: "/assets/images/image-1.png",
-		price: 350,
-		rating: 4.85
-	},
-	{
-		id: "18",
-		name: "Luxury Villa",
-		image: "/assets/images/image-1.png",
-		price: 350,
-		rating: 4.85
-	},
-	{
-		id: "19",
+        
         name: "Entire cabin",
         image: "/assets/images/image-2.png",
         price: 62,
         rating: 4.76
     },
     {
-		id: "20",
         name: "Modern Apartment",
         image: "/assets/images/image-3.png",
         price: 120,
         rating: 4.9
     },
     {
-		id: "21",
-		name: "Cozy Studio",
-		image: "/assets/images/image-4.png",
-		price: 80,
-		rating: 4.5
-	},
-	{
-		id: "22",	
         name: "Cozy Studio",
         image: "/assets/images/image-4.png",
         price: 80,
         rating: 4.5
     },
     {
-		id: "21",
-		name: "Cozy Studio",
-		image: "/assets/images/image-5.png",
-		price: 80,
-		rating: 4.5
-	},
-	{
-		id: "22",
-		name: "Cozy Studio",
-		image: "/assets/images/image-5.png",
-		price: 80,
-		rating: 4.5
-	},
-	{
-		id: "23",
         name: "Cozy Studio",
         image: "/assets/images/image-5.png",
         price: 80,
         rating: 4.5
     },
     {
-		id: "23",
         name: "Cozy Studio",
         image: "/assets/images/image-6.png",
         price: 80,
         rating: 4.5
     },
     {
-		id: "24",
+        name: "Cozy Studio",
+        image: "/assets/images/image-7.png",
+        price: 80,
+        rating: 4.5
+    },
+    {
+        name: "Cozy Studio",
+        image: "/assets/images/image-6.png",
+        price: 80,
+        rating: 4.5
+    },
+    {
         name: "Cozy Studio",
         image: "/assets/images/image-7.png",
         price: 80,

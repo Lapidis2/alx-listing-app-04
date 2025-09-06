@@ -11,9 +11,9 @@ const Filters: React.FC = () => {
     const [showSortDropdown, setShowSortDropdown] = useState(false);
 
     return (
-        <section className="flex justify-between items-center mx-8 mb-6">
+        <section className="flex justify-between px-3 lg:px-8">
             {/* Left: Filter Pills */}
-            <div className="flex space-x-3 overflow-x-auto no-scrollbar">
+            <div className="block w-48 lg:w-fit lg:flex space-x-2 space-y-3 lg:space-y-0  ">
                 <button
                     onClick={() => setActiveFilter(null)}
                     className={`px-4 py-2 rounded-full border text-sm whitespace-nowrap transition
@@ -41,7 +41,7 @@ const Filters: React.FC = () => {
             </div>
 
             {/* Right: Filter Button & Sort Dropdown */}
-            <div className="flex items-center gap-3 relative">
+            <div className="block lg:flex items-center justify-center  space-y-3 lg:space-y-0 gap-3 relative">
                 {/* Filter Button */}
                 <button
                     className="flex items-center gap-1 px-4 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
@@ -54,7 +54,7 @@ const Filters: React.FC = () => {
                 <div className="relative">
                     <button
                         onClick={() => setShowSortDropdown(!showSortDropdown)}
-                        className="px-4 py-2 rounded-full border border-gray-300 text-gray-700 text-sm flex items-center gap-1 hover:bg-gray-100 transition"
+                        className="px-2 py-2 rounded-full border border-gray-300 text-gray-700 text-sm flex items-center gap-1 hover:bg-gray-100 transition"
                     >
                         Sort by: {sortBy}
                         <svg
