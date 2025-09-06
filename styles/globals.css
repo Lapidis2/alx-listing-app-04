@@ -1,11 +1,11 @@
-@import "tailwindcss";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
 .bg-hero{
-    background-image: url('/assets/image 1.jpg');
+    background-image: url('/assets/image_1.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

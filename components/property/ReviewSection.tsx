@@ -28,41 +28,47 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ propertyId }) => {
   const [totalReviews, setTotalReviews] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
 
-const fetchReviews = useCallback(async () => {
-	if (!propertyId) return;
+  // ✅ Fetch reviews
+  const fetchReviews = useCallback(async () => {
+    if (!propertyId) return;
 
-	try {
-	  setLoading(true);
-	  setError(null);
-  
-	  const response = await axios.get(`/api/properties/${propertyId}/review`);
-	  const reviews = response.data;
-  
-	  setReviews(reviews || []);
-  
-	
-	  const total = reviews.length;
-	  const avg =
-		total > 0
-		  ? reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / total
-		  : 0;
-  
-	  setAverageRating(avg);
-	  setTotalReviews(total);
-	} catch (err) {
-	  console.error("Error fetching reviews:", err);
-	  setError("Failed to load reviews. Please try again.");
-	} finally {
-	  setLoading(false);
-	}
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await axios.get(`/api/properties/${propertyId}/review`);
+      const fetchedReviews: Review[] = response.data.reviews || response.data || [];
+
+      console.log('Fetched reviews:', fetchedReviews); // Debugging
+
+      setReviews(fetchedReviews);
+
+      const total = fetchedReviews.length;
+      const avg =
+        total > 0
+          ? fetchedReviews.reduce((sum, r) => sum + r.rating, 0) / total
+          : 0;
+
+      setAverageRating(avg);
+      setTotalReviews(total);
+    } catch (err) {
+      console.error("Error fetching reviews:", err);
+      setError("Failed to load reviews. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }, [propertyId]);
+
+  // ✅ Call fetchReviews on mount
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   const handleSubmitReview = async (reviewData: { rating: number; comment: string }) => {
     try {
       const response = await axios.post(`/api/properties/${propertyId}/review`, reviewData);
-      
+
       if (response.data.success) {
-        // Refresh reviews
         await fetchReviews();
         setShowReviewForm(false);
       } else {
@@ -74,7 +80,6 @@ const fetchReviews = useCallback(async () => {
     }
   };
 
- 
   const ratingDistribution = [0, 0, 0, 0, 0]; // 1-5 stars
   reviews.forEach(review => {
     if (review.rating >= 1 && review.rating <= 5) {
@@ -103,16 +108,15 @@ const fetchReviews = useCallback(async () => {
       {/* Rating Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="text-center">
-          <div className="text-4xl font-bold text-gray-900">{averageRating}</div>
+          <div className="text-4xl font-bold text-gray-900">{averageRating.toFixed(1)}</div>
           <div className="flex justify-center items-center mt-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <FaStar
                 key={star}
-                className={`w-5 h-5 ${
-                  star <= Math.round(averageRating)
-                    ? 'text-yellow-400 fill-current'
-                    : 'text-gray-300'
-                }`}
+                className={`w-5 h-5 ${star <= Math.round(averageRating)
+                  ? 'text-yellow-400 fill-current'
+                  : 'text-gray-300'
+                  }`}
               />
             ))}
           </div>
@@ -139,6 +143,7 @@ const fetchReviews = useCallback(async () => {
         </div>
       </div>
 
+      {/* Error Message */}
       {error && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 mb-6">
           <p className="text-yellow-800">{error}</p>
@@ -173,12 +178,14 @@ const fetchReviews = useCallback(async () => {
             <div key={review.id} className="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3 overflow-hidden">
                     {review.userAvatar ? (
                       <Image
                         src={review.userAvatar}
                         alt={review.userName}
-                        className="w-10 h-10 rounded-full object-cover"
+                        width={40}
+                        height={40}
+                        className="rounded-full object-cover"
                       />
                     ) : (
                       <FaUser className="text-gray-400" />
@@ -195,7 +202,7 @@ const fetchReviews = useCallback(async () => {
                   {getRatingIcon(review.rating)}
                 </div>
               </div>
-              
+
               <div className="flex items-center mb-3">
                 <div className="flex text-yellow-500">
                   {[...Array(5)].map((_, i) => (
@@ -206,7 +213,7 @@ const fetchReviews = useCallback(async () => {
                   ))}
                 </div>
               </div>
-              
+
               <p className="text-gray-700 leading-relaxed">{review.comment}</p>
             </div>
           ))}
