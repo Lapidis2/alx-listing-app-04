@@ -6,10 +6,10 @@ import { FILTERS } from "@/constants";
 
 interface PropertyCardProps {
     property: PropertyProps;
-    key: string | number;
+    
 }
 
-const PropertyCard: React.FC<PropertyCardProps> = ({property,key}) => {
+const PropertyCard: React.FC<PropertyCardProps> = ({property}) => {
     return (
         
         <div className="w-full max-w-[360px] rounded-2xl shadow hover:shadow-xl transition duration-300 bg-white">
@@ -20,7 +20,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({property,key}) => {
                     alt={property.name}
                     width={400}
                     height={250}
-                    key={key}
+            
                     className="rounded-2xl object-cover"
                 />
             </div>

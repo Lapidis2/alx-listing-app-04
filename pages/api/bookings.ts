@@ -1,6 +1,7 @@
+import { Booking } from "@/interfaces";
 import { NextApiRequest, NextApiResponse } from "next";
 
-let bookings: any[] = []; 
+const bookings: Booking[]= []; 
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {

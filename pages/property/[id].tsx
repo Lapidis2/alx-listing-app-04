@@ -1,4 +1,4 @@
-// pages/property/[id].tsx
+
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
@@ -22,11 +22,11 @@ const PropertyDetailPage = () => {
         setLoading(true);
         setError(null);
         
-        // Fetch property details
+
         const response = await axios.get(`/api/properties/${id}`);
         
-        // Handle different response formats
-        const propertyData = response.data.data || response.data;
+
+        const propertyData = response.data
         
         if (!propertyData) {
           throw new Error('Invalid property data received');

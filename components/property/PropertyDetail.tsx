@@ -143,7 +143,7 @@ const PropertyDetail = () => {
             className="object-cover"
             priority
             onError={(e) => {
-              // Fallback if image fails to load
+             
               e.currentTarget.src = '/assets/images/fallback-property.jpg';
             }}
           />
@@ -156,7 +156,10 @@ const PropertyDetail = () => {
             <CancellationPolicy />
         </div>
         <div>
-            <ReviewSection propertyId={property.id ?? ''}/>
+		{property.id && (
+  <ReviewSection key={property.id} propertyId={property.id}  />
+)}
+
         </div>
       </div>
     </div>

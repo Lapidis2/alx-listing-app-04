@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Property } from "@/types/api";
 import Link from "next/link";
-import { FaHome } from "react-icons/fa"; // Added missing import
+import { FaHome } from "react-icons/fa"; 
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -17,7 +17,6 @@ export default function PropertiesPage() {
         setError(null);
         const response = await axios.get("/api/properties");
         
-        // Handle different response formats
         if (response.data.properties && Array.isArray(response.data.properties)) {
           setProperties(response.data.properties);
         } else if (Array.isArray(response.data)) {
