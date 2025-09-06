@@ -20,7 +20,7 @@ export default function Home() {
         const response = await axios.get(
           `/api/properties?limit=${limit}&offset=${offset}`
         );
-        setProperties(response.data.properties);
+        setProperties(response.data);
       } catch (error) {
         console.error("Error fetching properties:", error);
       } finally {

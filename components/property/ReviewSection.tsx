@@ -10,7 +10,7 @@ interface Review {
   propertyId: string;
   userId: string;
   userName: string;
-  userAvatar: string;
+  userAvatar?: string;
   rating: number;
   comment: string;
   date: string;
@@ -29,37 +29,37 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ propertyId }) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
 
 const fetchReviews = useCallback(async () => {
-  if (!propertyId) return;
+	if (!propertyId) return;
 
-  try {
-    setLoading(true);
-    setError(null);
-
-    const response = await axios.get(`/api/properties/${propertyId}/reviews`);
-
-    if (response.data.success) {
-      setReviews(response.data.reviews || []);
-      setAverageRating(response.data.averageRating || 0);
-      setTotalReviews(response.data.total || 0);
-    } else {
-      throw new Error(response.data.error || 'Failed to load reviews');
-    }
-  } catch (err) {
-    console.error('Error fetching reviews:', err);
-    setError('Failed to load reviews. Please try again.');
-  } finally {
-    setLoading(false);
-  }
-}, [propertyId]); //dependency
-
-useEffect(() => {
-  fetchReviews();
-}, [fetchReviews]); //call our function here
-
+	try {
+	  setLoading(true);
+	  setError(null);
+  
+	  const response = await axios.get(`/api/properties/${propertyId}/review`);
+	  const reviews = response.data;
+  
+	  setReviews(reviews || []);
+  
+	
+	  const total = reviews.length;
+	  const avg =
+		total > 0
+		  ? reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / total
+		  : 0;
+  
+	  setAverageRating(avg);
+	  setTotalReviews(total);
+	} catch (err) {
+	  console.error("Error fetching reviews:", err);
+	  setError("Failed to load reviews. Please try again.");
+	} finally {
+	  setLoading(false);
+	}
+  }, [propertyId]);
 
   const handleSubmitReview = async (reviewData: { rating: number; comment: string }) => {
     try {
-      const response = await axios.post(`/api/properties/${propertyId}/reviews`, reviewData);
+      const response = await axios.post(`/api/properties/${propertyId}/review`, reviewData);
       
       if (response.data.success) {
         // Refresh reviews
@@ -74,7 +74,7 @@ useEffect(() => {
     }
   };
 
-  // Group reviews by rating
+ 
   const ratingDistribution = [0, 0, 0, 0, 0]; // 1-5 stars
   reviews.forEach(review => {
     if (review.rating >= 1 && review.rating <= 5) {
@@ -187,7 +187,7 @@ useEffect(() => {
                   <div>
                     <h4 className="font-semibold">{review.userName}</h4>
                     <div className="flex items-center text-sm text-gray-600">
-                      <span>{new Date(review.date).toLocaleDateString()}</span>
+                      <span>{new Date(review?.date).toLocaleDateString()}</span>
                     </div>
                   </div>
                 </div>
